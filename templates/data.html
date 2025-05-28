@@ -1,0 +1,124 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My_Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+</head>
+
+{% block content %}
+<body style="background-color: black;" text="white">
+    <style>
+        .col1 { width: 10%; }
+        .col2 { width: 20%; }
+        .col3 { width: 20%; }
+        .col4 { width: 20%; }
+        .col5 { width: 30%; }
+    </style>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Amar Saadi Coding Market</a>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{url_for('home_page')}}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('data')}}">Market</a>
+            </li>
+        </ul>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        </div>
+        {% if current_user.is_authenticated  %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" style="color: lawngreen; font-weight: bold;">
+                    <i class="fas fa-coins"></i>
+                    {{current_user.prettier_budget}}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Welcome, {{current_user.username}}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('logout_page')}}">Logout</a>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('login_page')}}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{url_for('register_page')}}">Register</a>
+            </li>
+        {% endif %}
+        </ul>
+      </nav>
+      <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+        <div class="row" style="color: aliceblue; margin-top: 20px; margin-left: 20px;">
+        <div class="col-8">
+            <h2>Available Items On The Market</h2>
+            <p>Click on one  of the  items below to view more information about them.</p>
+            <!-- <p>Click on the purchase button to buy the item.</p> -->
+            <!-- <p>Click on the more info button to view more information about the item.</p> -->
+            <br>
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <!-- Your Columns HERE -->
+                        <th class="col1">ID</th>
+                        <th class="col2">Name</th>
+                        <th class="col3">Barcode</th>
+                        <th class="col4">Price</th>
+                        <th class="col5">Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Your rows inside the table HERE: -->
+                     {%for i in item_name%}
+                     {%include ('includes/item_modals.html')%}
+
+                        <tr>
+                            <td>{{i.id}}</td>
+                            <td>{{i.name}}</td>
+                            <td>{{i.barcode}}</td>
+                            <td>{{i.price}}$</td>
+                            <td>
+                                <button class="btn btn-outline btn-info" data-bs-toggle="modal" data-bs-target="#Modal-MoreInfo-{{i.id}}">More Info</button>
+                                <button class="btn btn-outline btn-success" data-bs-toggle="modal" data-bs-target="#Modal-purchase-{{i.id}}">Purchase</button>
+                            </td>
+                        </tr>
+                     {%endfor%}
+                        
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <h2> Owned Items</h2>
+            <p>Click on sell items to put an item back on the market</p>
+
+        </div>
+    </div>
+   
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+</body>
+
+</html>
+{% endblock %}
